@@ -70,12 +70,14 @@
 - (IBAction)sendClipboard:(id)sender {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSString *contents = [pasteboard stringForType:NSPasteboardTypeString];
+    NSInteger contentsLen = [[contents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
     
-    NSLog(@"SENDING: %@", contents);
+    NSLog(@"SENDING: %@ LENGTH: %i", contents, contentsLen);
     
     PFObject *review = [PFObject objectWithClassName:@"Review"];
-    review[@"code"] = contents;
-    review[@"filename"] = @"";
+    [review setObject:contents forKey:@"code"];
+    [review setObject:@"" forKey:@"filename"];
+    [review setObject:[NSNumber numberWithInt:contentsLen] forKey:@"lineCount"];
     
     PFACL *defaultACL = [PFACL ACL];
     [defaultACL setPublicReadAccess:YES];
